@@ -1,0 +1,13 @@
+{
+  "name": "adirondacks",
+  "version": "1.0.0",
+  "description": "Adirondacks 6-role conservation-easement negotiation game (local build)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
