@@ -68,8 +68,18 @@ export const updateGroupContract = onCall({ cors: adirondacksGameDef.corsOrigins
       outcome = { ...contractOnly, deal_passed: true, dissenting_roles } as Outcome
     }
 
-    // 1. Persist the contract on the GROUP doc.
-    await groupRef.update({ outcome, agreement_reached })
+    // 1. Persist the contract on the GROUP doc. Mark instructor-resolved, and force
+    //    status:'completed' so a stalled group (still 'reporting') becomes finalize-
+    //    eligible. Preserve the original completed_at if the group already finished.
+    const priorCompletedAt = groupSnap.data()?.['completed_at']
+    await groupRef.update({
+      outcome,
+      agreement_reached,
+      status: 'completed',
+      completed_at: priorCompletedAt ?? admin.firestore.FieldValue.serverTimestamp(),
+      instructor_resolved: true,
+      instructor_resolved_at: admin.firestore.FieldValue.serverTimestamp(),
+    })
 
     // 2. Read everything needed to recompute + rebuild this group's rows.
     const [membersSnap, groupsSnap, configSnap, attendingSnap] = await Promise.all([
@@ -124,6 +134,7 @@ export const updateGroupContract = onCall({ cors: adirondacksGameDef.corsOrigins
         deal_reached: outcome !== null,
         score_branch: branch,
         batna_applied: branch === 'no_deal',
+        instructor_resolved: true,
         raw_score,
         text_answers,
         notes: outcome ? ((outcome['notes'] as string | undefined) ?? null) : null,

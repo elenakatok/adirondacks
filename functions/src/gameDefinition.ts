@@ -188,16 +188,17 @@ export const adirondacksGameDef: GameDefinition = {
     { key: 'atb_role_name',      kind: 'string', default: 'Adirondack Tourism Board' },
     // Per-role case brief (PDF) + scoring worksheet (xlsx). Clean slugs; the actual
     // V6 files are placed under frontend/public/role-info/ (Step D).
+    // Worksheet extensions match the actual V6 files: gpp/flp/atb are .xlsx; ala/fcc/governor are .xls.
     { key: 'gpp_sheet_url',          kind: 'url', default: '/role-info/gpp.pdf' },
     { key: 'gpp_worksheet_url',      kind: 'url', default: '/role-info/gpp-worksheet.xlsx' },
     { key: 'ala_sheet_url',          kind: 'url', default: '/role-info/ala.pdf' },
-    { key: 'ala_worksheet_url',      kind: 'url', default: '/role-info/ala-worksheet.xlsx' },
+    { key: 'ala_worksheet_url',      kind: 'url', default: '/role-info/ala-worksheet.xls' },
     { key: 'flp_sheet_url',          kind: 'url', default: '/role-info/flp.pdf' },
     { key: 'flp_worksheet_url',      kind: 'url', default: '/role-info/flp-worksheet.xlsx' },
     { key: 'fcc_sheet_url',          kind: 'url', default: '/role-info/fcc.pdf' },
-    { key: 'fcc_worksheet_url',      kind: 'url', default: '/role-info/fcc-worksheet.xlsx' },
+    { key: 'fcc_worksheet_url',      kind: 'url', default: '/role-info/fcc-worksheet.xls' },
     { key: 'governor_sheet_url',     kind: 'url', default: '/role-info/governor.pdf' },
-    { key: 'governor_worksheet_url', kind: 'url', default: '/role-info/governor-worksheet.xlsx' },
+    { key: 'governor_worksheet_url', kind: 'url', default: '/role-info/governor-worksheet.xls' },
     { key: 'atb_sheet_url',          kind: 'url', default: '/role-info/atb.pdf' },
     { key: 'atb_worksheet_url',      kind: 'url', default: '/role-info/atb-worksheet.xlsx' },
   ],

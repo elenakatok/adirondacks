@@ -33,6 +33,8 @@ export type ReportRow = {
   /** 'deal' = scored its deal-score; 'dissent' = FCC/ATB penalty; 'no_deal' = BATNA floor. */
   score_branch: ScoreBranch
   batna_applied: boolean
+  /** true when an instructor set/overrode this group's outcome via updateGroupContract. */
+  instructor_resolved: boolean
   raw_score: number | null
   text_answers: Record<string, string>
   notes: string | null
@@ -82,6 +84,9 @@ export const getReportData = onCall({ cors: adirondacksGameDef.corsOrigins }, as
     const groupOutcomeMap = new Map<string, Outcome | null>(
       sortedGroups.map(g => [g.id, (g.data()['outcome'] as Outcome | null) ?? null]),
     )
+    const groupResolvedMap = new Map<string, boolean>(
+      sortedGroups.map(g => [g.id, g.data()['instructor_resolved'] === true]),
+    )
 
     const rows: ReportRow[] = []
 
@@ -118,6 +123,7 @@ export const getReportData = onCall({ cors: adirondacksGameDef.corsOrigins }, as
         deal_reached: outcome !== null,
         score_branch: branch,
         batna_applied: branch === 'no_deal',
+        instructor_resolved: groupId ? (groupResolvedMap.get(groupId) ?? false) : false,
         raw_score: d['raw_score'] as number,
         text_answers,
         notes: outcome ? ((outcome['notes'] as string | undefined) ?? null) : null,
