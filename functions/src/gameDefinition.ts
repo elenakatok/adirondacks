@@ -211,9 +211,12 @@ export const adirondacksGameDef: GameDefinition = {
     ],
   })),
 
-  // ── STUB knowledge-check (TODO(KC): Elena supplies the real questions later) ──
-  // Six role-ID gates (system, one per role, ungraded) so the flow runs, plus two
-  // placeholder graded MC questions (role_target 'all'). Replace with real content.
+  // ── Knowledge check (Adirondacks_KC_Questions_v1.md — procedural rules, SHARED) ──
+  // Unlike the other games, this KC is one shared set for all six roles (it tests the
+  // negotiation's procedural mechanics, not role-private info), so Q2–Q8 use
+  // role_target 'all'. Q1 is the six per-role identity gates (assigned_role; excluded
+  // from the graded denominator). Graded denominator = 7 for every role. Explanations
+  // are shuffle-safe (they name the concept, never an option by letter/position).
   prepDefaults: [
     ...ROLE_KEYS.map((k) => {
       const label = adirondacksConfig.roles.find((r) => r.key === k)!.label
@@ -227,40 +230,110 @@ export const adirondacksGameDef: GameDefinition = {
         explanation: `You represent ${label} in the Adirondack Park easement negotiation.`,
       }
     }),
-    // TODO(KC): placeholder graded questions — replace with the real Adirondacks KC.
+    // ── Q2–Q8 — seven graded MC, SHARED across all roles (denominator 7) ──────
     {
-      field: 'kc_stub_threshold', type: 'mc', system: false,
+      field: 'kc_approval_threshold', type: 'mc', system: false,
       category: 'knowledge_check', format: 'multiple_choice',
       grading: 'static', correct_value: 'five_of_six', role_target: 'all',
-      prompt: '[PLACEHOLDER — TODO(KC)] How many of the six parties must approve a proposal for it to pass?',
+      prompt: 'The Adirondack Park Agency will issue a permit only if the deal has broad public support. In this case, that is defined as:',
       placeholder: '', order: 10, hidden: false, deletable: false,
       options: [
-        { value: 'all_six',     label: 'All six parties (unanimous).' },
-        { value: 'five_of_six', label: 'At least five of the six parties.' },
-        { value: 'majority',    label: 'A simple majority (four of six).' },
-        { value: 'gpp_only',    label: 'Only GPP, the proposer.' },
+        { value: 'simple_majority', label: 'A simple majority of parties' },
+        { value: 'four_of_six',     label: 'At least four of the six parties agree' },
+        { value: 'five_of_six',     label: 'At least five of the six parties agree to all stipulations' },
+        { value: 'unanimous',       label: 'Unanimous consent of all six parties' },
       ],
-      explanation: 'A proposal passes when at least five of the six parties approve it (and the conditional vetoers consent).',
+      explanation: 'A deal passes only when at least five of the six parties agree to all stipulations of the proposal. A simple majority or four-of-six is not enough, and full unanimity is not required — five of six is the threshold.',
     },
     {
-      field: 'kc_stub_batna', type: 'mc', system: false,
+      field: 'kc_blocking_power', type: 'mc', system: false,
       category: 'knowledge_check', format: 'multiple_choice',
-      grading: 'static', correct_value: 'no_deal', role_target: 'all',
-      prompt: '[PLACEHOLDER — TODO(KC)] When does your BATNA (no-deal floor) become your score?',
+      grading: 'static', correct_value: 'any_two', role_target: 'all',
+      prompt: 'Under the voting rule, how many parties acting together can block a deal?',
       placeholder: '', order: 11, hidden: false, deletable: false,
       options: [
-        { value: 'no_deal',  label: 'When the group fails to reach a deal after three proposal rounds.' },
-        { value: 'always',   label: 'Always, regardless of the negotiated outcome.' },
-        { value: 'dissent',  label: 'Whenever you personally vote against a proposal.' },
-        { value: 'never',    label: 'Never — the BATNA is only a reference point.' },
+        { value: 'any_one',      label: 'Any one party' },
+        { value: 'any_two',      label: 'Any two parties' },
+        { value: 'gpp_alone',    label: 'Only GPP alone' },
+        { value: 'majority_four', label: 'A majority of four' },
       ],
-      explanation: 'If no proposal reaches five approvals within three rounds, every role receives its BATNA floor.',
+      explanation: 'Because a deal needs five of six approvals, two parties voting against it are enough to keep it below the threshold and block it. A single party’s objection alone does not block a deal (the other five can still pass it), except where a party holds a specific veto — but as a matter of the general vote count, it takes two to block.',
     },
-    // Ungraded prep reflection.
     {
-      field: 'prep_approach', type: 'text', system: false,
+      field: 'kc_gpp_veto', type: 'mc', system: false,
+      category: 'knowledge_check', format: 'multiple_choice',
+      grading: 'static', correct_value: 'gpp', role_target: 'all',
+      prompt: 'Which party’s approval is required for ANY deal to go through, regardless of its terms?',
+      placeholder: '', order: 12, hidden: false, deletable: false,
+      options: [
+        { value: 'governor', label: 'The Governor' },
+        { value: 'flp',      label: 'The Forest Legacy Program' },
+        { value: 'gpp',      label: 'GPP' },
+        { value: 'fcc',      label: 'The Forest Conservation Committee' },
+      ],
+      explanation: 'GPP’s consent is necessary for any deal, whatever its terms — as the party granting the easements, no agreement can proceed without it. The Governor and the Forest Legacy Program hold only conditional vetoes tied to specific terms, not a universal one.',
+    },
+    {
+      field: 'kc_flp_veto', type: 'mc', system: false,
+      category: 'knowledge_check', format: 'multiple_choice',
+      grading: 'static', correct_value: 'land_payment', role_target: 'all',
+      prompt: 'The Forest Legacy Program’s approval is specifically required only when a deal includes:',
+      placeholder: '', order: 13, hidden: false, deletable: false,
+      options: [
+        { value: 'tax_break',    label: 'A tax break' },
+        { value: 'land_payment', label: 'Any payment for the land' },
+        { value: 'clear_cut',    label: 'Clear-cut logging' },
+        { value: 'wilderness',   label: 'Public wilderness designation' },
+      ],
+      explanation: 'The Forest Legacy Program must approve any deal that tenders money for the land — that is, any deal where the land price is anything other than donated. A tax break triggers the Governor’s approval, not the Forest Legacy Program’s; logging rules and public-use designations carry no such party-specific approval requirement.',
+    },
+    {
+      field: 'kc_governor_veto', type: 'mc', system: false,
+      category: 'knowledge_check', format: 'multiple_choice',
+      grading: 'static', correct_value: 'tax_break', role_target: 'all',
+      prompt: 'The Governor’s approval is specifically required only when a deal includes:',
+      placeholder: '', order: 14, hidden: false, deletable: false,
+      options: [
+        { value: 'land_payment',       label: 'Any payment for the land' },
+        { value: 'tax_break',          label: 'A tax break' },
+        { value: 'logging_change',     label: 'A change to logging rules' },
+        { value: 'recreation_access',  label: 'Public recreational access' },
+      ],
+      explanation: 'The Governor’s approval is required specifically when a deal grants a tax break. A payment for the land triggers the Forest Legacy Program’s approval instead; changes to logging rules and public-access provisions do not carry a Governor-specific requirement.',
+    },
+    {
+      field: 'kc_valid_proposal', type: 'mc', system: false,
+      category: 'knowledge_check', format: 'multiple_choice',
+      grading: 'static', correct_value: 'all_issues', role_target: 'all',
+      prompt: 'A proposal for a group vote must:',
+      placeholder: '', order: 15, hidden: false, deletable: false,
+      options: [
+        { value: 'three_of_five', label: 'Address at least three of the five issues' },
+        { value: 'all_issues',    label: 'Address all of the issues, using only the listed options' },
+        { value: 'new_issue',     label: 'Include at least one new issue proposed at the table' },
+        { value: 'gpp_only',      label: 'Resolve only the issues GPP cares about most' },
+      ],
+      explanation: 'A valid proposal must resolve all five issues, and each must be set to one of the listed options — parties cannot leave issues open, invent new issues at the table, or cherry-pick only some issues to settle.',
+    },
+    {
+      field: 'kc_cash_source', type: 'mc', system: false,
+      category: 'knowledge_check', format: 'multiple_choice',
+      grading: 'static', correct_value: 'flp_federal', role_target: 'all',
+      prompt: 'Any cash paid to GPP for the easements would come from:',
+      placeholder: '', order: 16, hidden: false, deletable: false,
+      options: [
+        { value: 'state_fund',   label: 'New York State’s general fund' },
+        { value: 'park_agency',  label: 'The Adirondack Park Agency' },
+        { value: 'flp_federal',  label: 'The Federal Government’s Forest Legacy Program' },
+        { value: 'gpp_reserves', label: 'GPP’s own reserves' },
+      ],
+      explanation: 'Cash paid to GPP for the easements comes from the Federal Government’s Forest Legacy Program — not from the state’s general fund, the Park Agency, or GPP itself.',
+    },
+    // ── Reflection — ungraded prep, open response, shared ─────────────────────
+    {
+      field: 'prep_preparation', type: 'text', system: false,
       category: 'preparation', format: 'text', role_target: 'all',
-      prompt: 'Which issues matter most to your party, and where can you afford to concede? Sketch your strategy for the negotiation.',
+      prompt: 'The 3-D reading argues that much of what determines a negotiation’s outcome happens away from the table, before anyone sits down — the reading quotes Charlene Barshefsky to the effect that what happens at the table is only the cleanup work. What will you do before the meeting to set yourself up for the best possible outcome? Describe your plan and your reasoning.',
       placeholder: '', order: 20, hidden: false, deletable: true,
     },
   ],
