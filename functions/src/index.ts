@@ -11,6 +11,7 @@ import {
   makeSyncRoster,
   makeTriggerMatching,
   makeStartNegotiation,
+  makeGetGroupMemberEmails,
   makeFinalizeInstance,
   makePushResultsToClassroom,
   makeGetGameConfig,
@@ -45,6 +46,7 @@ export const getRoster              = makeGetRoster(adirondacksGameDef)
 export const syncRoster             = makeSyncRoster(adirondacksGameDef)
 export const triggerMatching        = makeTriggerMatching(adirondacksGameDef)
 export const startNegotiation       = makeStartNegotiation(adirondacksGameDef)
+export const getGroupMemberEmails      = makeGetGroupMemberEmails(adirondacksGameDef)
 // ── Adirondacks-specific voting (Part 4) — replaces the shared unanimous flow for
 //    THIS game only. No submitInstructorOutcome: there is no instructor fallback;
 //    the 3rd failed proposal round is the resolution (automatic no-deal).
