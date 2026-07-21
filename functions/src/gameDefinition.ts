@@ -1,5 +1,7 @@
 import type { Outcome, OutcomeSchema, RoleConfig } from '@mygames/game-engine'
 import type { GameDefinition } from '@mygames/game-server'
+// Shared latecomer joinability (Latecomer_Placement_Spec_v1 §3.1) — one predicate for all five negotiation games.
+import { negotiationIsJoinable } from '@mygames/game-server'
 
 // ── Role config ───────────────────────────────────────────────────────────────
 // Six parties negotiating a conservation easement over Adirondack Park land.
@@ -175,6 +177,9 @@ export const adirondacksGameDef: GameDefinition = {
   computeRawScore,
   corsOrigins: ['https://adirondacks.mygames.live'],
   classroom: { callbackSecretId: 'adirondacks_v1' },
+  // Latecomer auto-placement (spec §3.1). Joinable = group not yet negotiating.
+  // No onPlace: negotiation placement is group_id only (audit 0b).
+  isJoinable: negotiationIsJoinable,
   // 3 proposal rounds; the local submitConfirmation turns the 3rd failure into an
   // automatic no-deal (branch 3) rather than the shared 'deadlocked' state.
   deadlockThreshold: MAX_ROUNDS,
