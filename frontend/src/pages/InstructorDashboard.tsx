@@ -1,4 +1,4 @@
-import { InstructorDashboard as SharedDashboard } from '@mygames/game-ui'
+import { InstructorDashboard as SharedDashboard, GroupsControlPanel } from '@mygames/game-ui'
 import { auth, functions, rtdb } from '../firebase'
 import { ROLE_LABELS } from '../gameConfig'
 
@@ -17,6 +17,7 @@ export default function InstructorDashboard() {
       settingsRoute="/settings"
       reportsRoute="/reports"
       scoreAndRecord={{ callableName: 'scoreAndRecord', label: 'Score & Record' }}
+      underHeadline={<GroupsControlPanel functions={functions} auth={auth} roleLabels={ROLE_LABELS} testId="adirondacks-groups" />}
     />
   )
 }

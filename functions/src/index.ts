@@ -63,6 +63,9 @@ export const getInfoUrls                        = makeGetInfoUrls(adirondacksGam
 export { getReportData } from './getReportData'
 export { updateGroupContract } from './updateGroupContract'
 export { scoreAndRecord } from './scoreAndRecord'
+// Instructor move / ungroup (classroom) — consumes shared makeMoveSeat via the negotiation
+// adapter (six role keys). See ./online. Additive: no other export or game is affected.
+export { moveSeat } from './online'
 
 // ── Non-game onRequest endpoints ──────────────────────────────────────────────
 
